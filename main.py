@@ -13,7 +13,7 @@ from farmware_tools import device, app
 
 
 points = app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
-position_x = int((round(device.get_current_position('x')))      #Actual X-Position
+position_x = int(round(device.get_current_position('x')))      #Actual X-Position
 position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
 
 def farmware_api_url():
