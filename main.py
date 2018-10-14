@@ -54,6 +54,7 @@ def search_plant():
          'Comparing axis positions with plant points to determine where we are.'
          all_plants=[]                                          #
          i=0
+         log("Searching","info")
          for plant_points in points:                            #Loop through all positons (plants, tools, etc)
                 if plant_points[u'pointer_type'] == u'Plant':   #Only look for points pointed with "plant"
                     all_plants.append({                         #Set up an array where every item is one plant
