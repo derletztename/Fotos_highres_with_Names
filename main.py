@@ -9,11 +9,6 @@ import requests
 import numpy as np
 import cv2
 
-
-from farmware_tools import device
-from farmware_tools import app
-import os, sys, time, subprocesspoints = app.get('points')
-
 def farmware_api_url():
     major_version = int(os.getenv('FARMBOT_OS_VERSION', '0.0.0')[0])
     base_url = os.environ['FARMWARE_URL']
@@ -52,17 +47,7 @@ def image_filename():
     'Prepare filename with timestamp.'
     epoch = int(time())
     filename = '{timestamp}.jpg'.format(timestamp=epoch)
-return filename
-
-
-'''position_x = device.get_current_position('x')
-position_y = device.get_current_position('y')filename = '{}/{}.jpg'.format(os.environ['IMAGES_DIR'], int(time.time()))
-ret = subprocess.call(['raspistill', '-w', '1024', '-h', '768', '-o', filename])
-if ret != 0:
-   device.log('Problem getting image (error code: {}).'.format(ret), 'error')
-  sys.exit(1)
-'''
-   
+return filename 
    
 def upload_path(filename):
     'Filename with path for uploading an image.'
