@@ -153,4 +153,4 @@ if __name__ == '__main__':
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
-            usb_camera_photo()
+         usb_camera_photo()
