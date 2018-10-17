@@ -5,7 +5,7 @@ Make high resolution pictures with Farmbot (Raspi Cam) and safe them with improv
 
 Farmware page install URL:
 ```
-https://raw.githubusercontent.com/AscendFB/Fotos_highres_with_Names/master/manifest.json
+https://raw.githubusercontent.com/derletztename/Fotos_highres_with_Names/master/manifest.json
 ```
 
 ## Use
