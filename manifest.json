@@ -5,8 +5,8 @@
  "description": "High resolution pictures with Farmbot (Raspi Cam) with improved naming",
  "version": "1.0.6",
  "min_os_version_major": 6,
- "url": "https://raw.githubusercontent.com/AscendFB/Fotos_highres_with_Names/master/manifest.json",
- "zip": "https://github.com/AscendFB/Fotos_highres_with_Names/archive/master.zip",
+ "url": "https://raw.githubusercontent.com/derletztename/Fotos_highres_with_Names/master/manifest.json",
+ "zip": "https://github.com/derletztename/Fotos_highres_with_Names/archive/master.zip",
  "executable": "python",
  "args": ["Fotos_highres_with_Names-master/main.py"]
 }
