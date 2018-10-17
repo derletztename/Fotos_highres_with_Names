@@ -9,14 +9,19 @@ import json
 import requests
 import numpy as np
 import cv2
+import sys
 from farmware_tools import device, app
 
+try:
+    points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
+    position_x = int(round(device.get_current_position('x')))      #Actual X-Position
+    position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
+except KeyError:
+     log("Loading points/positions failed","error")
 
-points = app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
-position_x = int(round(device.get_current_position('x')))      #Actual X-Position
-position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
 
 def farmware_api_url():
+
     major_version = int(os.getenv('FARMBOT_OS_VERSION', '0.0.0')[0])
     base_url = os.environ['FARMWARE_URL']
     return base_url + 'api/v1/' if major_version > 5 else base_url
@@ -52,21 +57,25 @@ def rotate(image):
 
 def search_plant():
          'Comparing axis positions with plant points to determine where we are.'
-         all_plants=[]                                          
+         all_plants=[]                                          #
          i=0
-         for plant_points in points:                            #Loop through all positons (plants, tools, etc)
+         for plant_points in points:                        #Loop through all positons (plants, tools, etc)
                 if plant_points[u'pointer_type'] == u'Plant':   #Only look for points pointed with "plant"
                     all_plants.append({                         #Set up an array where every item is one plant
                         'name': plant_points[u'name'],
                         'x': plant_points[u'x'],
                         'y': plant_points[u'y']})
-                if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
-                    current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
-                    return current_plant_name                                               #Get the plant_name out of the function
-                    break                                                                   #Stop looping when the plant name was found
-                else:
-                    i=i + 1                                                                 #Add 1 to loop count
-          
+                try:
+                    if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
+                        current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
+                        return current_plant_name                                               #Get the plant_name out of the function
+                        break                                                                   #Stop looping when the plant name was found
+                    else:
+                        i=i + 1                                                                 #Add 1 to loop count
+                except IndexError:
+                        log("No plant found. Make sure we are right on top of a registered plant.","error")
+                        print("error")
+                        sys.exit(2)
 
 
 def image_filename():
@@ -92,6 +101,7 @@ def usb_camera_photo():
     discard_frames = 20  # number of frames to discard for auto-adjust
 
     # Check for camera
+    filename = image_filename()
     if not os.path.exists('/dev/video' + str(camera_port)):
         print("No camera detected at video{}.".format(camera_port))
         camera_port += 1
@@ -116,7 +126,7 @@ def usb_camera_photo():
 
     # Output
     if ret:  # an image has been returned by the camera
-        filename = image_filename()
+        ###
         # Try to rotate the image
         try:
             final_image = rotate(image)
@@ -153,4 +163,4 @@ if __name__ == '__main__':
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
-         usb_camera_photo()
+       usb_camera_photo()
