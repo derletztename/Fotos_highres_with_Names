@@ -75,7 +75,10 @@ def search_plant():
                 except IndexError:
                         log("No plant found. Make sure we are right on top of a registered plant.","error")
                         print("error")
+                        log(all_plants,"info")
+                        log("{} Plants detected.".format(len(all_plants)),"info")
                         sys.exit(2)
+
 
 
 def image_filename():
@@ -88,7 +91,8 @@ def image_filename():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = os.environ['IMAGES_DIR']
+        images_dir = '/tmp/images'
+            #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
     path = images_dir + os.sep + filename
