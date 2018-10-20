@@ -13,8 +13,8 @@ import sys
 from farmware_tools import device, app
 
 try:
-    points = app.get_plants()
-    #points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
+    points2 = app.get_plants()
+    points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
     position_x = int(round(device.get_current_position('x')))      #Actual X-Position
     position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
 except KeyError:
@@ -77,6 +77,8 @@ def search_plant():
                         log("No plant found. Make sure we are right on top of a registered plant.","error")
                         print("error")
                         log(all_plants,"info")
+                        log (points,"info")
+                        log (points2, "info")
                         log("{} Plants detected.".format(len(all_plants)),"info")
                         sys.exit(2)
 
