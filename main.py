@@ -14,8 +14,8 @@ from farmware_tools import device, app
 
 try:
     points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
-    position_x = float(round(device.get_current_position('x')))      #Actual X-Position
-    position_y = float(round(device.get_current_position('y')))      #Actual Y-Position
+    position_x = int(round(device.get_current_position('x')))      #Actual X-Position
+    position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
 except KeyError:
      log("Loading points/positions failed","error")
 
@@ -75,7 +75,10 @@ def search_plant():
                 except IndexError:
                         log("No plant found. Make sure we are right on top of a registered plant.","error")
                         print("error")
+                        log(all_plants,"info")
+                        log("{} Plants detected.".format(len(all_plants)),"info")
                         sys.exit(2)
+
 
 
 def image_filename():
@@ -88,7 +91,8 @@ def image_filename():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = os.environ['IMAGES_DIR']
+        images_dir = '/tmp/images'
+            #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
     path = images_dir + os.sep + filename
@@ -163,4 +167,4 @@ if __name__ == '__main__':
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
-       usb_camera_photo()
+usb_camera_photo()
