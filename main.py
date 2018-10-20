@@ -10,13 +10,13 @@ import requests
 import numpy as np
 import cv2
 import sys
-from farmware_tools import device, app
+#from farmware_tools import device, app
 
 try:
-    points = app.get_plants()
-#    points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
-    position_x = int(round(device.get_current_position('x')))      #Actual X-Position
-    position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
+    points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
+    position_x = 600.0 #int(round(device.get_current_position('x')))      #Actual X-Position
+    position_y = 200.0 #int(round(device.get_current_position('y')))      #Actual Y-Position
+    all_plants = []
 except KeyError:
      log("Loading points/positions failed","error")
 
@@ -58,36 +58,36 @@ def rotate(image):
 
 def search_plant():
          'Comparing axis positions with plant points to determine where we are.'
-         all_plants=[]                                          #
          i=0
+#         app_points = json.loads(points)
          for plant_points in points:                        #Loop through all positons (plants, tools, etc)
- #               if plant_points[u'pointer_type'] == u'Plant':   #Only look for points pointed with "plant"
                 all_plants.append({                         #Set up an array where every item is one plant
                         'name': plant_points[u'name'],
                         'x': plant_points[u'x'],
                         'y': plant_points[u'y']})
-                try:
-                    if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
+                if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
                         current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
                         return current_plant_name                                               #Get the plant_name out of the function
                         break                                                                   #Stop looping when the plant name was found
-                    else:
+                else:
                         i=i + 1                                                                 #Add 1 to loop count
-                except IndexError:
-                        log("No plant found. Make sure we are right on top of a registered plant.","error")
-                        print("error")
-                        log(all_plants,"info")
-                        log("{} Plants detected.".format(len(all_plants)),"info")
-                        sys.exit(2)
-
 
 
 def image_filename():
     'Prepare filename with timestamp.'
     plant_name = search_plant()             #Get the plant name from its function
-    epoch = str(time.strftime("%d_%m_%Y"))  #Changed the timestamp from unix to "DD_MM_YYYY"
-    filename = '{}_x{}_y{}_{}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
-    return filename
+    if plant_name != None:
+        epoch = str(time.strftime("%d_%m_%Y"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+        filename = '{}_x{}_y{}_{}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
+        return filename
+    else:
+        log("No plant found. Make sure we are right on top of a registered plant.","error")
+        print("error")
+        log(all_plants,"info")
+        log("{} Plants detected.".format(len(all_plants)),"info")
+        sys.exit(2)
+
+
 
 def upload_path(filename):
     'Filename with path for uploading an image.'
@@ -106,6 +106,7 @@ def usb_camera_photo():
     discard_frames = 20  # number of frames to discard for auto-adjust
 
     # Check for camera
+    
     filename = image_filename()
     if not os.path.exists('/dev/video' + str(camera_port)):
         print("No camera detected at video{}.".format(camera_port))
