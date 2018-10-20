@@ -78,7 +78,6 @@ def search_plant():
                         print("error")
                         log(all_plants,"info")
                         log("{} Plants detected.".format(len(all_plants)),"info")
-                        log (points2,"info")
                         sys.exit(2)
 
 
