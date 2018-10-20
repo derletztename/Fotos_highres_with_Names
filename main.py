@@ -13,8 +13,8 @@ import sys
 from farmware_tools import device, app
 
 try:
-    points2 = app.get_plants()
-    points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
+    points = app.get_plants()
+    #points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
     position_x = int(round(device.get_current_position('x')))      #Actual X-Position
     position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
 except KeyError:
@@ -61,7 +61,7 @@ def search_plant():
          all_plants=[]                                          #
          i=0
          for plant_points in points:                        #Loop through all positons (plants, tools, etc)
-                if plant_points[u'pointer_type'] == u'Plant':   #Only look for points pointed with "plant"
+               # if plant_points[u'pointer_type'] == u'Plant':   #Only look for points pointed with "plant"
                     all_plants.append({                         #Set up an array where every item is one plant
                         'name': plant_points[u'name'],
                         'x': plant_points[u'x'],
