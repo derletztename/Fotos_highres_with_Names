@@ -10,7 +10,7 @@ import requests
 import numpy as np
 import cv2
 import sys
-#from farmware_tools import device, app
+from farmware_tools import device, app
 
 try:
     points =  app.get('points')          #Get all points from webapp, would be smarter to get plants, will try that later
