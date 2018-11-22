@@ -3,7 +3,7 @@
  "language": "python",
  "author": "derletztename",
  "description": "High resolution pictures with Farmbot (Raspi Cam) with improved naming",
- "version": "1.0.8",
+ "version": "1.1.1",
  "min_os_version_major": 6,
  "url": "https://raw.githubusercontent.com/derletztename/Fotos_highres_with_Names/master/manifest.json",
  "zip": "https://github.com/derletztename/Fotos_highres_with_Names/archive/master.zip",
