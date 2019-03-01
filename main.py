@@ -91,10 +91,10 @@ def image_filename():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/tmp/images'
+        images_dir = '/img'
             #os.environ['IMAGES_DIR']
     except KeyError:
-        images_dir = '/tmp/images'
+        images_dir = '/img'
     path = images_dir + os.sep + filename
     return path
 
