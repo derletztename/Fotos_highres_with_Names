@@ -100,7 +100,6 @@ def detect_usb_name():
     return stripped
         
 def upload_path(filename):
-    usb_dir=detect_usb_name()
     'Filename with path for uploading an image.'
     try:
         images_dir = '/tmp/images'
@@ -117,7 +116,7 @@ def usb_camera_photo():
     discard_frames = 20  # number of frames to discard for auto-adjust
 
     # Check for camera
-    
+    usb_dir=detect_usb_name()
     filename = image_filename()
     if not os.path.exists('/dev/video' + str(camera_port)):
         print("No camera detected at video{}.".format(camera_port))
