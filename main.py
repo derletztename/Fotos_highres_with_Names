@@ -10,7 +10,9 @@ import requests
 import numpy as np
 import cv2
 import sys
+import subprocess
 from farmware_tools import device, app
+
 
 try:
     points =  app.get_plants()         #Get all points from webapp, would be smarter to get plants, will try that later
@@ -89,10 +91,19 @@ def image_filename():
 
 
 
+def detect_usb_name():
+    rpistr = "ls /media/pi"
+    proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
+    line = proc.stdout.readline()
+    stripped = line.rstrip()
+    log(stripped,"info")
+    return stripped
+        
 def upload_path(filename):
+    usb_dir=detect_usb_name()
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/images'
+        images_dir = '/tmp/images'
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
