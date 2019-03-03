@@ -103,11 +103,12 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
+                    os.system("mount /dev/sda /mnt/usb1") 
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/dev/sda/'
+        images_dir = '/mnt/usb1/'
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
