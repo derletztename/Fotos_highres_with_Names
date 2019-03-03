@@ -103,6 +103,7 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
+                    os.system("mkdir -p /mnt/usb1" )
                     os.system("mount /dev/sda /mnt/usb1") 
         
 def upload_path(filename):
