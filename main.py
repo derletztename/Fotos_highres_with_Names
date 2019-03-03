@@ -115,7 +115,7 @@ def detect_usb_name():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = 'mnt/usb1'
+        images_dir = '/mnt/usb1'
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
@@ -164,9 +164,10 @@ def usb_camera_photo():
         else:
             filename = 'rotated_' + filename
         # Save the image to file
-        cv2.imwrite(upload_path(filename), final_image)
+        ret_val = cv2.imwrite(upload_path(filename), final_image)
         print("Image saved: {}".format(upload_path(filename)))
         log("Image saved: {}".format(upload_path(filename)),"success")
+        log(ret_val,"info")
     else:  # no image has been returned by the camera
         log("Problem getting image.", "error")
 
