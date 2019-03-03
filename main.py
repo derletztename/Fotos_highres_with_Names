@@ -103,7 +103,7 @@ def detect_usb_name():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/tmp/images'
+        images_dir = '/dev/sda/'
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
