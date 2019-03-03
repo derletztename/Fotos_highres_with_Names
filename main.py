@@ -95,7 +95,7 @@ def detect_usb_name():
     rpistr = "ls /dev/"
     proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
     line = proc.stdout.readline()
-    log(line,"info")
+    log(proc,"info")
     stripped = line.rstrip()
     log(stripped,"info")
     return stripped
