@@ -106,6 +106,11 @@ def detect_usb_name():
                     os.system("mkdir -p /mnt/usb1" )
                     os.system("mount /dev/sda /mnt/usb1") 
                     time.sleep(10)
+
+    rpistr = "ls /mnt/usb1/"
+    proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
+    line = proc.stdout.readline()
+    log(line,"info")
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
