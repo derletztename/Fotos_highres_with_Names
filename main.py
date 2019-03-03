@@ -92,7 +92,7 @@ def image_filename():
 
 
 def detect_usb_name():
-    rpistr = "ls /media/"
+    rpistr = "ls /dev/"
     proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
     line = proc.stdout.readline()
     log(line,"info")
