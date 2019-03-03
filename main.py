@@ -92,13 +92,17 @@ def image_filename():
 
 
 def detect_usb_name():
-    rpistr = "ls /dev/"
-    proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
-    line = proc.stdout.readline()
-    log(proc,"info")
-    stripped = line.rstrip()
-    log(stripped,"info")
-    return stripped
+    partitionsFile = open("/proc/partitions")
+    lines = partitionsFile.readlines()[2:]#Skips the header lines
+    for line in lines:
+        words = [x.strip() for x in line.split()]
+        minorNumber = int(words[1])
+        deviceName = words[3]
+        if minorNumber % 16 == 0:
+            path = "/sys/class/block/" + deviceName
+            if os.path.islink(path):
+                if os.path.realpath(path).find("/usb") > 0:
+                    log("/dev/%s" % deviceName,"info")
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
@@ -154,6 +158,7 @@ def usb_camera_photo():
         # Save the image to file
         cv2.imwrite(upload_path(filename), final_image)
         print("Image saved: {}".format(upload_path(filename)))
+        log("Image saved: {}".format(upload_path(filename)),"success")
     else:  # no image has been returned by the camera
         log("Problem getting image.", "error")
 
