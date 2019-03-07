@@ -106,6 +106,10 @@ def detect_usb_name():
                     os.system("mkdir -p /mnt/usb1" )
                     os.system("mount /dev/sda /mnt/usb1") 
                     time.sleep(10)
+                    if not os.path.exists('/mnt/usb1'):
+                        log("Not mounted","info")
+                        sys.exit(3)
+
 
     rpistr = "ls /mnt/usb1/"
     proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
