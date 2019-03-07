@@ -103,10 +103,13 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
-                    os.system("mkdir -p /mnt/usb1" )
-                    os.system("mount /dev/sda /mnt/usb1") 
+                    if not os.path.exists('/media/usb1'):
+                       os.system("mkdir -p /media/usb1" )
+                       os.system("mount /dev/sda /media/usb1/") 
                     time.sleep(10)
-                    if not os.path.exists('/mnt/usb1'):
+                    ret_mount = os.system("mount | grep sda")
+                    log(ret_mount,"info")
+                    if not os.path.exists('/mnt/usb1/'):
                         log("Not mounted","info")
                         sys.exit(3)
 
