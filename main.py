@@ -112,7 +112,7 @@ def mount_usb_drive():
      sys.exit(4)
    if not os.path.exists('/tmp/usb/1'):
        os.system("mkdir -p /tmp/usb/1" )
-   os.system("mount -t vfat /dev/%s /tmp/usb/1"% sdx_path) 
+   os.system("mount -t vfat /dev/%s /tmp/usb/1 -o uid=1000,gid=1000,utf8,dmask=027,fmask=137"% sdx_path) 
    time.sleep(1)
    log("USB mounted","success")
 
