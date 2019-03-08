@@ -103,16 +103,26 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
-                    if not os.path.exists('/tmp/usb/1'):
-                       os.system("mkdir -p /tmp/usb/1" )
 
-                    os.system("mount -t vfat /dev/sda1 /tmp/usb/1") 
-                    time.sleep(2)
-                    ret_mount = os.system("mount | grep sda1")
-                    log(ret_mount,"info")
-                    if not os.path.exists('/tmp/usb/1'):
-                        log("Not mounted","info")
-                        sys.exit(3)
+
+def mount_usb_drive():
+   if not os.path.exists('/tmp/usb/1'):
+       os.system("mkdir -p /tmp/usb/1" )
+
+   os.system("mount -t vfat /dev/%1 /tmp/usb/1"%deviceName) 
+   time.sleep(1)
+   ret_mount = os.system("mount | grep %1"%deviceName)
+   log(ret_mount,"info")
+   if not os.path.exists('/tmp/usb/1'):
+       log("Failed to mount","error")
+       sys.exit(3)
+   else:
+       log("USB mounted","success")
+
+def unmount_usb_drive():
+   if os.path.exists('/tmp/usb/1'):
+       os.system("unmount  /dev/%1"%deviceName)
+       log("USB unmounted","success")
 
         
 def upload_path(filename):
@@ -132,7 +142,6 @@ def usb_camera_photo():
     discard_frames = 20  # number of frames to discard for auto-adjust
 
     # Check for camera
-    usb_dir=detect_usb_name()
     filename = image_filename()
     if not os.path.exists('/dev/video' + str(camera_port)):
         print("No camera detected at video{}.".format(camera_port))
@@ -194,7 +203,11 @@ if __name__ == '__main__':
     except (KeyError, ValueError):
         CAMERA = 'USB'  # default camera
 
+    detect_usb_name()
+    mount_usb_drive()
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
         usb_camera_photo()
+    unmount_usb_drive()
+
