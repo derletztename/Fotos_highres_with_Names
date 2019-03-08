@@ -109,9 +109,9 @@ def mount_usb_drive():
    if not os.path.exists('/tmp/usb/1'):
        os.system("mkdir -p /tmp/usb/1" )
 
-   os.system("mount -t vfat /dev/%1 /tmp/usb/1"% deviceName) 
+   os.system("mount -t vfat /dev/%s1 /tmp/usb/1"% deviceName) 
    time.sleep(1)
-   ret_mount = os.system("mount | grep %1"% deviceName)
+   ret_mount = os.system("mount | grep %s1"% deviceName)
    log(ret_mount,"info")
    if not os.path.exists('/tmp/usb/1'):
        log("Failed to mount","error")
@@ -121,7 +121,7 @@ def mount_usb_drive():
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
-       os.system("unmount  /dev/%1"% deviceName)
+       os.system("unmount  /dev/%s1"% deviceName)
        log("USB unmounted","success")
 
         
@@ -203,11 +203,11 @@ if __name__ == '__main__':
     except (KeyError, ValueError):
         CAMERA = 'USB'  # default camera
 
-  #  detect_usb_name()
-  #  mount_usb_drive()
+    detect_usb_name()
+    mount_usb_drive()
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
         usb_camera_photo()
-  #  unmount_usb_drive()
+    unmount_usb_drive()
 
