@@ -123,7 +123,10 @@ def mount_usb_drive():
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
        os.system("unmount  /dev/%s1"% sdx_path)
+   if not os.path.exists('/tmp/usb/1'):
        log("USB unmounted","success")
+   else:
+        log("USB unmount failed","error")
 
         
 def upload_path(filename):
@@ -205,6 +208,7 @@ if __name__ == '__main__':
         CAMERA = 'USB'  # default camera
 
     sdx_path = detect_usb_name()
+    log(sdx_path,"info")
     mount_usb_drive()
     if 'RPI' in CAMERA:
         rpi_camera_photo()
