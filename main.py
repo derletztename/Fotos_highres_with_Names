@@ -103,13 +103,13 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
-        if "mmcblk" in deviceName:
-            log("No USB found","error")
-            sys.exit(4)
     return deviceName
 
 
 def mount_usb_drive():
+   if "mmcblk" in sdx_path:
+     log("No USB found","error")
+     sys.exit(4)
    if not os.path.exists('/tmp/usb/1'):
        os.system("mkdir -p /tmp/usb/1" )
    os.system("mount -t vfat /dev/%s /tmp/usb/1"% sdx_path) 
