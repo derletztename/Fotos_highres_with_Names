@@ -103,26 +103,22 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
-                    if not os.path.exists('/media/usb1'):
-                       os.system("mkdir -p /media/usb1" )
-                       os.system("mount /dev/sda /media/usb1/") 
-                    time.sleep(10)
-                    ret_mount = os.system("mount | grep sda")
+                    if not os.path.exists('/tmp/usb/1'):
+                       os.system("mkdir -p /tmp/usb/1" )
+
+                    os.system("mount -t vfat /dev/sda1 /tmp/usb/1") 
+                    time.sleep(2)
+                    ret_mount = os.system("mount | grep sda1")
                     log(ret_mount,"info")
-                    if not os.path.exists('/mnt/usb1/'):
+                    if not os.path.exists('/tmp/usb/1'):
                         log("Not mounted","info")
                         sys.exit(3)
 
-
-    rpistr = "ls /mnt/usb1/"
-    proc = subprocess.Popen(rpistr, shell=True, preexec_fn=os.setsid,stdout=subprocess.PIPE)
-    line = proc.stdout.readline()
-    log(line,"info")
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/mnt/usb1'
+        images_dir = '/tmp/usb/1'
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
