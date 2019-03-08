@@ -110,9 +110,9 @@ def mount_usb_drive():
    if not os.path.exists('/tmp/usb/1'):
        os.system("mkdir -p /tmp/usb/1" )
 
-   os.system("mount -t vfat /dev/%s1 /tmp/usb/1"% sdx_path) 
+   os.system("mount -t vfat /dev/%s /tmp/usb/1"% sdx_path) 
    time.sleep(1)
-   ret_mount = os.system("mount | grep %s1"% sdx_path)
+   ret_mount = os.system("mount | grep %s"% sdx_path)
    log(ret_mount,"info")
    if not os.path.exists('/tmp/usb/1'):
        log("Failed to mount","error")
@@ -122,7 +122,7 @@ def mount_usb_drive():
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
-       os.system("unmount  /dev/%s1"% sdx_path)
+       os.system("unmount  /dev/%s"% sdx_path)
    if not os.path.exists('/tmp/usb/1'):
        log("USB unmounted","success")
    else:
