@@ -122,7 +122,7 @@ def mount_usb_drive():
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
-       ret_code_unmount = os.system("unmount /dev/%s"% sdx_path)
+       ret_code_unmount = os.system("unmount /tmp/usb/1")
        log(ret_code_unmount,"info")
    if not os.path.exists('/tmp/usb/1'):
        log("USB unmounted","success")
