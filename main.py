@@ -103,31 +103,24 @@ def detect_usb_name():
             if os.path.islink(path):
                 if os.path.realpath(path).find("/usb") > 0:
                     log("/dev/%s" % deviceName,"info")
+        if "mmcblk" in deviceName:
+            log("No USB found","error")
+            sys.exit(4)
     return deviceName
 
 
 def mount_usb_drive():
    if not os.path.exists('/tmp/usb/1'):
        os.system("mkdir -p /tmp/usb/1" )
-
    os.system("mount -t vfat /dev/%s /tmp/usb/1"% sdx_path) 
    time.sleep(1)
-   ret_mount = os.system("mount | grep %s"% sdx_path)
-   log(ret_mount,"info")
-   if not os.path.exists('/tmp/usb/1'):
-       log("Failed to mount","error")
-       sys.exit(3)
-   else:
-       log("USB mounted","success")
+   log("USB mounted","success")
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
        ret_code_unmount = os.system("unmount /tmp/usb/1")
        log(ret_code_unmount,"info")
-   if not os.path.exists('/tmp/usb/1'):
        log("USB unmounted","success")
-   else:
-       log("USB unmount failed","error")
 
         
 def upload_path(filename):
