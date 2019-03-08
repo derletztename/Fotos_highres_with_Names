@@ -122,11 +122,12 @@ def mount_usb_drive():
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
-       os.system("unmount  /tmp/usb/1")
+       ret_code_unmount = os.system("unmount  /tmp/usb/1")
+       log(ret_code_unmount,"info")
    if not os.path.exists('/tmp/usb/1'):
        log("USB unmounted","success")
    else:
-        log("USB unmount failed","error")
+       log("USB unmount failed","error")
 
         
 def upload_path(filename):
