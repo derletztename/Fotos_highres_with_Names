@@ -72,6 +72,7 @@ def search_plant():
                         'y': plant_points[u'y']})
                 if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
                         current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
+                        log(current_plant_name,"info")
                         return current_plant_name                                               #Get the plant_name out of the function
                         break                                                                   #Stop looping when the plant name was found
                 else:
