@@ -134,8 +134,9 @@ def unmount_usb_drive():
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
+    folder = folder_name()
     try:
-        images_dir = '/tmp/usb/1/{}'.format(folder_name())
+        images_dir = '/tmp/usb/1/{}'.format(folder)
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
