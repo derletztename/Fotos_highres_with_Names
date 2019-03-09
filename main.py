@@ -80,8 +80,9 @@ def search_plant():
 
 def folder_name():
     if plant_name != None:
-        plant_name_fix = plant_name.replace(" ","_")
-        foldername = '{}_X{}Y{}'.format(plant_name_fix,position_x,position_y)
+        plant_name_fix1 = plant_name.replace(" ","_")
+        plant_name_fix2 = plant_name_fix1.replace("'", "")
+        foldername = '{}_X{}Y{}'.format(plant_name_fix2,position_x,position_y)
         os.system("mkdir -p /tmp/usb/1/{}".format(foldername))
         return foldername
     else:
