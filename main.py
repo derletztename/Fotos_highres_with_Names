@@ -22,8 +22,9 @@ try:
 except KeyError:
      log("Loading points/positions failed","error")
 
-foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
 plant_name = search_plant()             #Get the plant name from its function
+foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
+
 
 
 def farmware_api_url():
