@@ -22,6 +22,9 @@ try:
 except KeyError:
      log("Loading points/positions failed","error")
 
+foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
+plant_name = search_plant()             #Get the plant name from its function
+
 
 def farmware_api_url():
 
@@ -77,18 +80,16 @@ def search_plant():
 
 def image_filename():
     'Prepare filename with timestamp.'
-    plant_name = search_plant()             #Get the plant name from its function
     if plant_name != None:
-        epoch = str(time.strftime("%d_%m_%Y"))  #Changed the timestamp from unix to "DD_MM_YYYY"
-        filename = '{}_x{}_y{}_{}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
+        epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+        filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
         return filename
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
-        print("error")
-        log(all_plants,"info")
-        log("{} Plants detected.".format(len(all_plants)),"info")
+        log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
         sys.exit(2)
-
+    if not os.path.exists('/tmp/usb/1/{}'.format(foldername)):
+        os.system("mkdir -p /tmp/usb/1/{}").format(foldername)
 
 
 def detect_usb_name():
@@ -100,9 +101,9 @@ def detect_usb_name():
         deviceName = words[3]
         if minorNumber % 16 == 0:
             path = "/sys/class/block/" + deviceName
-            if os.path.islink(path):
-                if os.path.realpath(path).find("/usb") > 0:
-                    log("/dev/%s" % deviceName,"info")
+   #         if os.path.islink(path):
+   #             if os.path.realpath(path).find("/usb") > 0:
+   #                 log("/dev/%s" % deviceName,"info")
     return deviceName
 
 
@@ -114,19 +115,20 @@ def mount_usb_drive():
        os.system("mkdir -p /tmp/usb/1" )
    os.system("mount -t vfat /dev/%s /tmp/usb/1 -o uid=1000,gid=1000,utf8,dmask=027,fmask=137"% sdx_path) 
    time.sleep(1)
-   log("USB mounted","success")
+   #log("USB mounted","success")
 
 def unmount_usb_drive():
    if os.path.exists('/tmp/usb/1'):
        ret_code_unmount = os.system("sudo unmount /dev/%s"% sdx_path)
-       log(ret_code_unmount,"info")
-       log("USB unmounted","success")
+       os.sleep(2)
+    #   log(ret_code_unmount,"info")
+    #   log("USB unmounted","success")
 
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/tmp/usb/1'
+        images_dir = '/tmp/usb/1/{}'.format(foldername)
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
@@ -175,9 +177,10 @@ def usb_camera_photo():
             filename = 'rotated_' + filename
         # Save the image to file
         ret_val = cv2.imwrite(upload_path(filename), final_image)
-        print("Image saved: {}".format(upload_path(filename)))
-        log("Image saved: {}".format(upload_path(filename)),"success")
-        log(ret_val,"info")
+        if ret_val==True:
+           log("Image saved: {}".format(upload_path(filename)),"success")
+        else:
+            log("Image was not saved.","error")
     else:  # no image has been returned by the camera
         log("Problem getting image.", "error")
 
@@ -189,7 +192,7 @@ def rpi_camera_photo():
         retcode = call(
             ["raspistill", "-w", "3280", "-h", "2464", "-o", filename_path])
         if retcode == 0:
-            print("Image saved: {}".format(filename_path))
+            log("Image saved: {}".format(filename_path),"success")
         else:
             log("Problem getting image.", "error")
     except OSError:
@@ -202,7 +205,6 @@ if __name__ == '__main__':
         CAMERA = 'USB'  # default camera
 
     sdx_path = detect_usb_name()
-    log(sdx_path,"info")
     mount_usb_drive()
     if 'RPI' in CAMERA:
         rpi_camera_photo()
