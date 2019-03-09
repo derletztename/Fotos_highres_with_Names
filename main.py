@@ -82,7 +82,7 @@ def folder_name():
     if plant_name != None:
         log("123","info")
         foldername = '{}_X{}Y{}'.format(plant_name,position_x,position_y)
-        os.system('mkdir -p /tmp/usb/1/{}').format(foldername)
+        os.system("mkdir -p /tmp/usb/1/{}".format(foldername))
         log(foldername,"info")
         return foldername
     else:
