@@ -72,7 +72,6 @@ def search_plant():
                         'y': plant_points[u'y']})
                 if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
                         current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
-                        log(current_plant_name,"info")
                         return current_plant_name                                               #Get the plant_name out of the function
                         break                                                                   #Stop looping when the plant name was found
                 else:
@@ -94,7 +93,6 @@ def folder_name():
 
 def image_filename():
     'Prepare filename with timestamp.'
-    plant_name = search_plant()             #Get the plant name from its function
     epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
     filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
     return filename
@@ -108,11 +106,11 @@ def detect_usb_name():
         words = [x.strip() for x in line.split()]
         minorNumber = int(words[1])
         deviceName = words[3]
-        if minorNumber % 16 == 0:
-            path = "/sys/class/block/" + deviceName
-            if os.path.islink(path):
-                if os.path.realpath(path).find("/usb") > 0:
-                    log("/dev/%s" % deviceName,"info")
+ #       if minorNumber % 16 == 0:
+ #           path = "/sys/class/block/" + deviceName
+ #           if os.path.islink(path):
+ #               if os.path.realpath(path).find("/usb") > 0:
+ #                   log("/dev/%s" % deviceName,"info")
     return deviceName
 
 
@@ -215,6 +213,7 @@ if __name__ == '__main__':
 
     sdx_path = detect_usb_name()
     mount_usb_drive()
+    plant_name = search_plant()             #Get the plant name from its function
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
