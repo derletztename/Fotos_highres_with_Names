@@ -81,8 +81,8 @@ def search_plant():
 def folder_name():
     if plant_name != None:
         foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
-        return foldername
         log(foldername,"info")
+        return foldername
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
         log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
