@@ -80,7 +80,6 @@ def search_plant():
 
 def folder_name():
     if plant_name != None:
-        log("123","info")
         foldername = '{}_X{}Y{}'.format(plant_name,position_x,position_y)
         os.system("mkdir -p /tmp/usb/1/{}".format(foldername))
         log(foldername,"info")
@@ -137,9 +136,8 @@ def unmount_usb_drive():
         
 def upload_path(filename):
     'Filename with path for uploading an image.'
-    folder = folder_name()
     try:
-        images_dir = '/tmp/usb/1/{}'.format(folder)
+        images_dir = '/tmp/usb/1/{}'.format(folder_name())
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
@@ -187,9 +185,10 @@ def usb_camera_photo():
         else:
             filename = 'rotated_' + filename
         # Save the image to file
-        ret_val = cv2.imwrite(upload_path(filename), final_image)
+        upload_path = upload_path(filename)
+        ret_val = cv2.imwrite(upload_path, final_image)
         if ret_val==True:
-           log("Image saved: {}".format(upload_path(filename)),"success")
+           log("Image saved: {}".format(upload_path),"success")
         else:
             log("Image was not saved.","error")
     else:  # no image has been returned by the camera
