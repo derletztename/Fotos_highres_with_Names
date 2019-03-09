@@ -73,7 +73,7 @@ def search_plant():
                 if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
                         current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
                         return current_plant_name                                               #Get the plant_name out of the function
-                        break                                                                   #Stop looping when the plant name was found
+                        log("should not be displayed","info")                                                                   #Stop looping when the plant name was found
                 else:
                         i=i + 1                                                                 #Add 1 to loop count
 
@@ -81,14 +81,15 @@ def search_plant():
 def folder_name():
     if plant_name != None:
         foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
-        log(foldername,"info")
+        os.system("mkdir -p /tmp/usb/1/{}").format(foldername)
         return foldername
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
         log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
         sys.exit(2)
-    if not os.path.exists('/tmp/usb/1/{}'.format(foldername)):
-        os.system("mkdir -p /tmp/usb/1/{}").format(foldername)
+
+        
+
 
 
 def image_filename():
