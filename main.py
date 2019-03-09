@@ -82,6 +82,7 @@ def folder_name():
     if plant_name != None:
         foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
         return foldername
+        log(foldername,"info")
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
         log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
@@ -108,9 +109,9 @@ def detect_usb_name():
         deviceName = words[3]
         if minorNumber % 16 == 0:
             path = "/sys/class/block/" + deviceName
-   #         if os.path.islink(path):
-   #             if os.path.realpath(path).find("/usb") > 0:
-   #                 log("/dev/%s" % deviceName,"info")
+            if os.path.islink(path):
+                if os.path.realpath(path).find("/usb") > 0:
+                    log("/dev/%s" % deviceName,"info")
     return deviceName
 
 
