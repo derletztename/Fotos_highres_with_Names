@@ -15,15 +15,14 @@ from farmware_tools import device, app
 
 
 try:
-    points =  app.get_plants()         #Get all points from webapp, would be smarter to get plants, will try that later
+    points =  app.get_plants()         #Get all plants from webapp
     position_x = int(round(device.get_current_position('x')))      #Actual X-Position
     position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
     all_plants = []
 except KeyError:
      log("Loading points/positions failed","error")
 
-plant_name = search_plant()             #Get the plant name from its function
-foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
+
 
 
 
@@ -79,18 +78,25 @@ def search_plant():
                         i=i + 1                                                                 #Add 1 to loop count
 
 
-def image_filename():
-    'Prepare filename with timestamp.'
+def folder_name():
     if plant_name != None:
-        epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
-        filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
-        return filename
+        foldername = '{} X{}Y{}'.format(plant_name,position_x,position_y)
+        return foldername
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
         log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
         sys.exit(2)
     if not os.path.exists('/tmp/usb/1/{}'.format(foldername)):
         os.system("mkdir -p /tmp/usb/1/{}").format(foldername)
+
+
+def image_filename():
+    'Prepare filename with timestamp.'
+    plant_name = search_plant()             #Get the plant name from its function
+    epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+    filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
+    return filename
+
 
 
 def detect_usb_name():
@@ -129,7 +135,7 @@ def unmount_usb_drive():
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/tmp/usb/1/{}'.format(foldername)
+        images_dir = '/tmp/usb/1/{}'.format(folder_name())
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
