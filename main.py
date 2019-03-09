@@ -82,7 +82,6 @@ def folder_name():
     if plant_name != None:
         foldername = '{}_X{}Y{}'.format(plant_name,position_x,position_y)
         os.system("mkdir -p /tmp/usb/1/{}".format(foldername))
-        log(foldername,"info")
         return foldername
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
@@ -185,10 +184,10 @@ def usb_camera_photo():
         else:
             filename = 'rotated_' + filename
         # Save the image to file
-        upload_path = upload_path(filename)
-        ret_val = cv2.imwrite(upload_path, final_image)
+        path = upload_path(filename)
+        ret_val = cv2.imwrite(path, final_image)
         if ret_val==True:
-           log("Image saved: {}".format(upload_path),"success")
+           log("Image saved: {}".format(path),"success")
         else:
             log("Image was not saved.","error")
     else:  # no image has been returned by the camera
