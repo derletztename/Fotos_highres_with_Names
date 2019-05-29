@@ -96,7 +96,8 @@ def folder_name():
 
 def image_filename():
     'Prepare filename with timestamp.'
-    epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+   #epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+    epoch = str(time.strftime("%Y.%m.%d_%H-%M"))  #Changed the timestamp to "YYYY.MM.DD_H-M"
     filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
     return filename
 
