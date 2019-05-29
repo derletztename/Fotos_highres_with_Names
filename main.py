@@ -10,15 +10,20 @@ import requests
 import numpy as np
 import cv2
 import sys
+import subprocess
 from farmware_tools import device, app
 
+
 try:
-    points =  app.get_plants()         #Get all points from webapp, would be smarter to get plants, will try that later
+    points =  app.get_plants()         #Get all plants from webapp
     position_x = int(round(device.get_current_position('x')))      #Actual X-Position
     position_y = int(round(device.get_current_position('y')))      #Actual Y-Position
     all_plants = []
 except KeyError:
      log("Loading points/positions failed","error")
+
+
+
 
 
 def farmware_api_url():
@@ -68,31 +73,72 @@ def search_plant():
                 if all_plants[i]['x'] == position_x and all_plants[i]['y'] == position_y:   #See if current position matches with the plant
                         current_plant_name = json.dumps(plant_points[u'name']).strip('""')      #Extract plant name and erase quotes
                         return current_plant_name                                               #Get the plant_name out of the function
-                        break                                                                   #Stop looping when the plant name was found
+
                 else:
                         i=i + 1                                                                 #Add 1 to loop count
 
 
-def image_filename():
-    'Prepare filename with timestamp.'
-    plant_name = search_plant()             #Get the plant name from its function
+def folder_name():
     if plant_name != None:
-        epoch = str(time.strftime("%d_%m_%Y"))  #Changed the timestamp from unix to "DD_MM_YYYY"
-        filename = '{}_x{}_y{}_{}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
-        return filename
+        plant_name_fix1 = plant_name.replace(" ","_")
+        plant_name_fix2 = plant_name_fix1.replace("'", "")
+        foldername = '{}_X{}Y{}'.format(plant_name_fix2,position_x,position_y)
+        os.system("mkdir -p /tmp/usb/1/{}".format(foldername))
+        return foldername
     else:
         log("No plant found. Make sure we are right on top of a registered plant.","error")
-        print("error")
-        log(all_plants,"info")
-        log("{} Plants detected.".format(len(all_plants)),"info")
+        log("{} Plants detected:{}".format((len(all_plants)),all_plants),"info")
         sys.exit(2)
 
+        
 
 
+
+def image_filename():
+    'Prepare filename with timestamp.'
+    epoch = str(time.strftime("%d.%m.%Y %H-%M"))  #Changed the timestamp from unix to "DD_MM_YYYY"
+    filename = '{} X{}Y{} {}.jpg'.format(plant_name, position_x, position_y,epoch)     #Add plant_name, x-and y-positions and timestamp
+    return filename
+
+
+
+def detect_usb_name():
+    partitionsFile = open("/proc/partitions")
+    lines = partitionsFile.readlines()[2:]#Skips the header lines
+    for line in lines:
+        words = [x.strip() for x in line.split()]
+        minorNumber = int(words[1])
+        deviceName = words[3]
+ #       if minorNumber % 16 == 0:
+ #           path = "/sys/class/block/" + deviceName
+ #           if os.path.islink(path):
+ #               if os.path.realpath(path).find("/usb") > 0:
+ #                   log("/dev/%s" % deviceName,"info")
+    return deviceName
+
+
+def mount_usb_drive():
+   if "mmcblk" in sdx_path:
+     log("No USB found","error")
+     sys.exit(4)
+   if not os.path.exists('/tmp/usb/1'):
+       os.system("mkdir -p /tmp/usb/1" )
+   os.system("mount -t vfat /dev/%s /tmp/usb/1 -o uid=1000,gid=1000,utf8,dmask=027,fmask=137"% sdx_path) 
+   time.sleep(1)
+   #log("USB mounted","success")
+
+def unmount_usb_drive():
+   if os.path.exists('/tmp/usb/1'):
+       ret_code_unmount = os.system("sudo unmount /dev/%s"% sdx_path)
+       time.sleep(2)
+    #   log(ret_code_unmount,"info")
+    #   log("USB unmounted","success")
+
+        
 def upload_path(filename):
     'Filename with path for uploading an image.'
     try:
-        images_dir = '/tmp/images'
+        images_dir = '/tmp/usb/1/{}'.format(folder_name())
             #os.environ['IMAGES_DIR']
     except KeyError:
         images_dir = '/tmp/images'
@@ -106,7 +152,6 @@ def usb_camera_photo():
     discard_frames = 20  # number of frames to discard for auto-adjust
 
     # Check for camera
-    
     filename = image_filename()
     if not os.path.exists('/dev/video' + str(camera_port)):
         print("No camera detected at video{}.".format(camera_port))
@@ -141,8 +186,12 @@ def usb_camera_photo():
         else:
             filename = 'rotated_' + filename
         # Save the image to file
-        cv2.imwrite(upload_path(filename), final_image)
-        print("Image saved: {}".format(upload_path(filename)))
+        path = upload_path(filename)
+        ret_val = cv2.imwrite(path, final_image)
+        if ret_val==True:
+           log("Image saved: {}".format(path),"success")
+        else:
+            log("Image was not saved.","error")
     else:  # no image has been returned by the camera
         log("Problem getting image.", "error")
 
@@ -154,7 +203,7 @@ def rpi_camera_photo():
         retcode = call(
             ["raspistill", "-w", "3280", "-h", "2464", "-o", filename_path])
         if retcode == 0:
-            print("Image saved: {}".format(filename_path))
+            log("Image saved: {}".format(filename_path),"success")
         else:
             log("Problem getting image.", "error")
     except OSError:
@@ -166,7 +215,11 @@ if __name__ == '__main__':
     except (KeyError, ValueError):
         CAMERA = 'USB'  # default camera
 
+    sdx_path = detect_usb_name()
+    mount_usb_drive()
+    plant_name = search_plant()             #Get the plant name from its function
     if 'RPI' in CAMERA:
         rpi_camera_photo()
     else:
         usb_camera_photo()
+    unmount_usb_drive()
